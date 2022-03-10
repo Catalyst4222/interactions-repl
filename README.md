@@ -1,0 +1,1 @@
+A simple extension to add a repl function to discord-py-interactions based bots

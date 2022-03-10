@@ -1,0 +1,3 @@
+discord-py-interactions>=4.1
+interactions-wait-for
+import_expression
