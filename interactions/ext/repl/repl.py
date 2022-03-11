@@ -58,6 +58,7 @@ class ReplExtension(Extension):
         }
 
     async def start_repl(self, msg: Message):
+        await msg.reply("Starting repl")
 
         env = await self.gather_env(msg)
         scope = Scope()
@@ -90,7 +91,7 @@ class ReplExtension(Extension):
             )
 
             if code.content in ("quit", "exit", "exit()"):
-                return await send("Exiting.")
+                return await msg.reply("Exiting.")
 
             stdout = io.StringIO()
 
@@ -117,7 +118,8 @@ class ReplExtension(Extension):
                         await send(val_fmt)
 
                 if len(exc_fmt) > 2000:
-                    await send("Traceback is too big to be sent")
+                    await send("Traceback is too big to be sent\n"
+                               f"{e.__class__.__name__}: {e.__str__()}")
                 else:
                     await send(exc_fmt)
 
