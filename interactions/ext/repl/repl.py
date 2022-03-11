@@ -30,7 +30,7 @@ class ReplExtension(Extension):
             return
 
         if msg.channel_id in self.sessions:
-            await (await msg.get_channel()).send(
+            return await (await msg.get_channel()).send(
                 "There is already an active python session!"
             )
 
