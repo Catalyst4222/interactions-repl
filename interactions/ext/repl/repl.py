@@ -3,19 +3,31 @@ import io
 import traceback
 from contextlib import redirect_stdout
 from functools import partial
-from typing import Dict, Union
+from typing import Dict
 
 from interactions.ext.wait_for import setup as setup_wait_for
 from interactions.ext.wait_for import wait_for
 
-from interactions import Channel, Extension, Guild, Message, extension_listener
+from interactions import Client, Extension, Message, extension_listener
 
 from .jsk import (AsyncCodeExecutor, Scope, codeblock_converter,
                   jsk_python_result_handling)
 
 
 class ReplExtension(Extension):
-    def __init__(self, client):
+    def __init__(self, client, blacklist: Dict[str, str] = None):
+        """
+        :param client: The Client instance to use the repl
+        :type client: Client
+        :param blacklist: A str-str dict of words and what to replace them with
+        :type blacklist: Dict[str, str]
+        """
+        self.client: Client = client
+
+        if blacklist is None:
+            blacklist = {}
+        self.blacklist: Dict[str, str] = blacklist
+
         self.sessions: set = set()
 
     @extension_listener("on_message_create")
@@ -105,7 +117,9 @@ class ReplExtension(Extension):
 
                         env["_"] = result
 
-                        await jsk_python_result_handling(msg, result, self.client)
+                        await jsk_python_result_handling(
+                            msg, result, self.client, self.blacklist
+                        )
 
             except Exception as e:
                 value = stdout.getvalue()
@@ -113,14 +127,26 @@ class ReplExtension(Extension):
                 exc_fmt = f"Traceback:\n```py\n{traceback.format_exc()}\n```"
 
                 if val_fmt is not None:
+                    for before, after in self.blacklist.items():
+                        # .replace doesn't seem to work?
+                        temp = val_fmt.split(before)
+                        val_fmt = after.join(temp)
+
                     if len(val_fmt) > 2000:
                         await send("Content is too big to be sent")
                     else:
                         await send(val_fmt)
 
+                for before, after in self.blacklist.items():
+                    # .replace doesn't seem to work?
+                    temp = exc_fmt.split(before)
+                    exc_fmt = after.join(temp)
+
                 if len(exc_fmt) > 2000:
-                    await send("Traceback is too big to be sent\n"
-                               f"{e.__class__.__name__}: {e.__str__()}")
+                    await send(
+                        "Traceback is too big to be sent\n"
+                        f"{e.__class__.__name__}: {e.__str__()}"
+                    )
                 else:
                     await send(exc_fmt)
 
@@ -129,12 +155,17 @@ class ReplExtension(Extension):
                 val_fmt = f"`stdout`:\n```py\n{value}\n```" if value else None
 
                 if val_fmt is not None:
+                    for before, after in self.blacklist.items():
+                        # .replace doesn't seem to work?
+                        temp = val_fmt.split(before)
+                        val_fmt = after.join(temp)
+
                     if len(val_fmt) > 2000:
                         await send("Content is too big to be sent")
                     else:
                         await send(val_fmt)
 
 
-def setup(client):
+def setup(client, blacklist: Dict[str, str] = None):
     setup_wait_for(client)
-    ReplExtension(client)
+    ReplExtension(client, blacklist)

@@ -136,7 +136,9 @@ class AsyncCodeExecutor:  # pylint: disable=too-few-public-methods
 
     def __aiter__(self):
         exec(
-            compile(self.code, "<python>", "exec"), self.scope.globals, self.scope.locals
+            compile(self.code, "<python>", "exec"),
+            self.scope.globals,
+            self.scope.locals,
         )  # pylint: disable=exec-used
         func_def = (
             self.scope.locals.get("_repl_coroutine")
@@ -171,7 +173,7 @@ class AsyncCodeExecutor:  # pylint: disable=too-few-public-methods
 
 
 async def jsk_python_result_handling(
-    msg: Message, result, bot: Client
+    msg: Message, result, bot: Client, blacklist: dict
 ):  # pylint: disable=too-many-return-statements
     """
     Determines what is done with a result when it comes out of jsk py.
@@ -198,6 +200,11 @@ async def jsk_python_result_handling(
     if not isinstance(result, str):
         # repr all non-strings
         result = repr(result)
+
+    for before, after in blacklist.items():
+        # .replace doesn't seem to work?
+        temp = result.split(before)
+        result = after.join(temp)
 
     # Eventually the below handling should probably be put somewhere else
     if len(result) <= 1900:
