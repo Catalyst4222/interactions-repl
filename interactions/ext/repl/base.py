@@ -45,10 +45,10 @@ version = Version(
 )
 
 base = Base(
-    name="interactions-python",
+    name="interactions-repl",
     version=version,
     link="https://github.com/Catalyst4222/interactions-repl",
-    description="A python implementation for discord-py-interactions",
-    packages=["interactions.ext.python"],
+    description="A repl implementation for discord-py-interactions",
+    packages=["interactions.ext.repl"],
     requirements=["discord-py-interactions>=4.1.0"],
 )
