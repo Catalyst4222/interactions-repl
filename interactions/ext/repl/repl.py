@@ -24,14 +24,14 @@ class ReplExtension(Extension):
             return
 
         if msg.content not in (
-            f"<@{self.client.me.id}> repl",
-            f"<@!{self.client.me.id}> repl",
+            f"<@{self.client.me.id}> python",
+            f"<@!{self.client.me.id}> python",
         ):
             return
 
         if msg.channel_id in self.sessions:
             await (await msg.get_channel()).send(
-                "There is already an active repl session!"
+                "There is already an active python session!"
             )
 
         self.sessions.add(msg.channel_id)

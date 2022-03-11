@@ -11,16 +11,16 @@ with open("README.md", "r", encoding="utf-8") as f:
     long_description = f.read()
 
 setup(
-    name="interactions-repl",
+    name="interactions-python",
     version=version,
-    description="Add a repl function to discord-py-interactions",
+    description="Add a python function to discord-py-interactions",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/Catalyst4222/interactions-repl",
     author="Catalyst4",
     author_email="catalyst4222@gmail.com",
     license="MIT",
-    packages=["interactions.ext.repl"],
+    packages=["interactions.ext.python"],
     classifiers=[
         "Programming Language :: Python :: 3",
         "Development Status :: 4 - Beta",

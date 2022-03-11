@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-jishaku.repl.scope
+jishaku.python.scope
 ~~~~~~~~~~~~~~~~~~
 
 The Scope class and functions relating to it.

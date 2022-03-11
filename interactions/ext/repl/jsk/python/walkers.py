@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-jishaku.repl.walkers
+jishaku.python.walkers
 ~~~~~~~~~~~~~~~~~~~~
 
 AST walkers for code transformation and analysis.

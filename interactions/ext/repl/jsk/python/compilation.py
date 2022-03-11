@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-jishaku.repl.compilation
+jishaku.python.compilation
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 Constants, functions and classes related to classifying, compiling and executing Python code.
@@ -136,7 +136,7 @@ class AsyncCodeExecutor:  # pylint: disable=too-few-public-methods
 
     def __aiter__(self):
         exec(
-            compile(self.code, "<repl>", "exec"), self.scope.globals, self.scope.locals
+            compile(self.code, "<python>", "exec"), self.scope.globals, self.scope.locals
         )  # pylint: disable=exec-used
         func_def = (
             self.scope.locals.get("_repl_coroutine")
@@ -160,11 +160,11 @@ class AsyncCodeExecutor:  # pylint: disable=too-few-public-methods
                 yield await func(*self.args)
         except Exception:  # pylint: disable=broad-except
             # Falsely populate the linecache to make the REPL line appear in tracebacks
-            linecache.cache["<repl>"] = (
+            linecache.cache["<python>"] = (
                 len(self.source),  # Source length
                 None,  # Time modified (None bypasses expunge)
                 [line + "\n" for line in self.source.splitlines()],  # Line list
-                "<repl>",  # 'True' filename
+                "<python>",  # 'True' filename
             )
 
             raise

@@ -1,3 +1,3 @@
 from . import jsk
 from .base import *
-from .command import *
+from .repl import *
