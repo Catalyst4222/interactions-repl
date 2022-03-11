@@ -58,7 +58,6 @@ class ReplExtension(Extension):
         }
 
     async def start_repl(self, msg: Message):
-        await msg.reply("Starting repl")
 
         env = await self.gather_env(msg)
         scope = Scope()
@@ -77,6 +76,8 @@ class ReplExtension(Extension):
                 and int(author.id) == int(_message_author.id)
                 and is_codeblock
             )
+
+        await msg.reply("Starting repl")
 
         while True:  # I've been working on a code thing
             code = codeblock_converter(
